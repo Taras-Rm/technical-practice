@@ -31,7 +31,12 @@ func InitTaskStore(fileName string) TaskStore {
 }
 
 func (s *store) GetAll() ([]domain.Task, error) {
-	return s.getTasksList()
+	db, err := s.loadDb()
+	if err != nil {
+		return nil, err
+	}
+
+	return db.Tasks, nil
 }
 
 func (s *store) Add(description string) (*domain.Task, error) {
@@ -45,19 +50,14 @@ func (s *store) Add(description string) (*domain.Task, error) {
 		UpdatedAt:   createAt,
 	}
 
-	db, err := s.getDb()
+	db, err := s.loadDb()
 	if err != nil {
 		return nil, err
 	}
 
 	db.Tasks = append(db.Tasks, newTask)
 
-	byteJson, err := json.Marshal(db)
-	if err != nil {
-		return nil, err
-	}
-
-	err = os.WriteFile(s.fileName, byteJson, FileModePermit)
+	err = s.saveDb(*db)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (s *store) Add(description string) (*domain.Task, error) {
 }
 
 func (s *store) Delete(id int) error {
-	db, err := s.getDb()
+	db, err := s.loadDb()
 	if err != nil {
 		return err
 	}
@@ -86,12 +86,7 @@ func (s *store) Delete(id int) error {
 
 	db.Tasks = newTasks
 
-	byteJson, err := json.Marshal(db)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(s.fileName, byteJson, FileModePermit)
+	err = s.saveDb(*db)
 	if err != nil {
 		return err
 	}
@@ -100,7 +95,7 @@ func (s *store) Delete(id int) error {
 }
 
 func (s *store) Update(id int, description string) error {
-	db, err := s.getDb()
+	db, err := s.loadDb()
 	if err != nil {
 		return err
 	}
@@ -112,12 +107,7 @@ func (s *store) Update(id int, description string) error {
 		}
 	}
 
-	byteJson, err := json.Marshal(db)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(s.fileName, byteJson, FileModePermit)
+	err = s.saveDb(*db)
 	if err != nil {
 		return err
 	}
@@ -126,24 +116,19 @@ func (s *store) Update(id int, description string) error {
 }
 
 func (s *store) SetStatus(id int, status string) error {
-	db, err := s.getDb()
+	db, err := s.loadDb()
 	if err != nil {
 		return err
 	}
 
 	for idx, task := range db.Tasks {
 		if task.Id == id {
-			db.Tasks[idx].Description = status
+			db.Tasks[idx].Status = status
 			db.Tasks[idx].UpdatedAt = time.Now()
 		}
 	}
 
-	byteJson, err := json.Marshal(db)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(s.fileName, byteJson, FileModePermit)
+	err = s.saveDb(*db)
 	if err != nil {
 		return err
 	}
@@ -151,7 +136,7 @@ func (s *store) SetStatus(id int, status string) error {
 	return nil
 }
 
-func (s *store) getDb() (*domain.Db, error) {
+func (s *store) loadDb() (*domain.Db, error) {
 	jsonFile, err := os.Open(s.fileName)
 	if err != nil {
 		return nil, err
@@ -174,11 +159,16 @@ func (s *store) getDb() (*domain.Db, error) {
 	return &db, nil
 }
 
-func (s *store) getTasksList() ([]domain.Task, error) {
-	db, err := s.getDb()
+func (s *store) saveDb(db domain.Db) error {
+	byteJson, err := json.Marshal(db)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return db.Tasks, nil
+	err = os.WriteFile(s.fileName, byteJson, FileModePermit)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
