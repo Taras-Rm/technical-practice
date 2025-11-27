@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	commCli "github.com/Taras-Rm/technical-practice/task-tracker/cli"
 	"github.com/Taras-Rm/technical-practice/task-tracker/db"
 )
 
@@ -11,14 +12,14 @@ const tasksStoreFileName = "./tasks.json"
 
 func main() {
 	args := os.Args
-	fmt.Println("Hello world", args)
 
 	tasksStore := db.InitTaskStore(tasksStoreFileName)
 
-	err := tasksStore.Update(1, "Fishing")
-	if err != nil {
-		fmt.Printf("Error happend: %s", err.Error())
-	}
+	cli := commCli.NewCLI(tasksStore)
 
-	// fmt.Println(tasks)
+	err := cli.ParseCommand(args[1:])
+
+	if err != nil {
+		fmt.Println(err)
+	}
 }
