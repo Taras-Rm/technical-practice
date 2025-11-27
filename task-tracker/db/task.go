@@ -13,7 +13,7 @@ import (
 const FileModePermit = 0644
 
 type TaskStore interface {
-	GetAll() ([]domain.Task, error)
+	GetAll(status string) ([]domain.Task, error)
 	Add(description string) (*domain.Task, error)
 	Delete(id int) error
 	Update(id int, description string) error
@@ -30,13 +30,26 @@ func InitTaskStore(fileName string) TaskStore {
 	}
 }
 
-func (s *store) GetAll() ([]domain.Task, error) {
+func (s *store) GetAll(status string) ([]domain.Task, error) {
 	db, err := s.loadDb()
 	if err != nil {
 		return nil, err
 	}
 
-	return db.Tasks, nil
+	if status == "" {
+		return db.Tasks, nil
+
+	}
+
+	filteredTasks := []domain.Task{}
+
+	for _, task := range db.Tasks {
+		if task.Status == status {
+			filteredTasks = append(filteredTasks, task)
+		}
+	}
+
+	return filteredTasks, nil
 }
 
 func (s *store) Add(description string) (*domain.Task, error) {
@@ -121,11 +134,19 @@ func (s *store) SetStatus(id int, status string) error {
 		return err
 	}
 
+	isTaskFound := false
+
 	for idx, task := range db.Tasks {
 		if task.Id == id {
 			db.Tasks[idx].Status = status
 			db.Tasks[idx].UpdatedAt = time.Now()
+
+			isTaskFound = true
 		}
+	}
+
+	if !isTaskFound {
+		return fmt.Errorf("wrong id")
 	}
 
 	err = s.saveDb(*db)
