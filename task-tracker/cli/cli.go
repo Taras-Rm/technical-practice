@@ -5,6 +5,16 @@ import (
 	"strconv"
 
 	"github.com/Taras-Rm/technical-practice/task-tracker/db"
+	"github.com/Taras-Rm/technical-practice/task-tracker/domain"
+)
+
+const (
+	ADD_CMD              = "add"
+	DELETE_CMD           = "delete"
+	UPDATE_CMD           = "update"
+	LIST_CMD             = "list"
+	MARK_IN_PROGRESS_CMD = "mark_in_progress"
+	MARK_DONE_CMD        = "mark_done"
 )
 
 type CLI struct {
@@ -25,17 +35,17 @@ func (c *CLI) ParseCommand(args []string) error {
 	handleArgs := args[1:]
 
 	switch args[0] {
-	case "add":
+	case ADD_CMD:
 		return c.handleAdd(handleArgs)
-	case "delete":
+	case DELETE_CMD:
 		return c.handleDelete(handleArgs)
-	case "update":
+	case UPDATE_CMD:
 		return c.handleUpdate(handleArgs)
-	case "list":
+	case LIST_CMD:
 		return c.handleList(handleArgs)
-	case "mark-in-progress":
+	case MARK_IN_PROGRESS_CMD:
 		return c.handleSetInProgress(handleArgs)
-	case "mark-done":
+	case MARK_DONE_CMD:
 		return c.handleSetDone(handleArgs)
 	default:
 		fmt.Println("Wrong command.")
@@ -128,7 +138,7 @@ func (c *CLI) handleSetInProgress(args []string) error {
 		return err
 	}
 
-	err = c.taskStore.SetStatus(id, "in-progress")
+	err = c.taskStore.SetStatus(id, string(domain.StatusInProgress))
 	if err != nil {
 		return err
 	}
@@ -148,7 +158,7 @@ func (c *CLI) handleSetDone(args []string) error {
 		return err
 	}
 
-	err = c.taskStore.SetStatus(id, "done")
+	err = c.taskStore.SetStatus(id, string(domain.StatusDone))
 	if err != nil {
 		return err
 	}

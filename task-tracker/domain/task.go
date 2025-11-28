@@ -2,13 +2,13 @@ package domain
 
 import "time"
 
-// type TaskStatus string
+type TaskStatus string
 
-// const (
-// 	StatusTodo       TaskStatus = "todo"
-// 	StatusInProgress TaskStatus = "in-progrress"
-// 	StatusDone       TaskStatus = "done"
-// )
+const (
+	StatusTodo       TaskStatus = "todo"
+	StatusInProgress TaskStatus = "in-progrress"
+	StatusDone       TaskStatus = "done"
+)
 
 type Task struct {
 	Id          int       `json:"id"`
