@@ -27,8 +27,9 @@ func (c *CLI) Run(args []string) error {
 		return err
 	}
 
-	fmt.Println(publicEvents)
-	fmt.Println("finish")
+	printResult := c.formatEventsForPrint(publicEvents)
+
+	fmt.Println(printResult)
 
 	return nil
 }
@@ -39,4 +40,26 @@ func (c *CLI) getUsername(args []string) (string, error) {
 	}
 
 	return args[1], nil
+}
+
+func (c *CLI) formatEventsForPrint(events []githubapi.PublicEvent) string {
+	print := ""
+
+	for idx, event := range events {
+		switch event.Type {
+		case githubapi.PushEventType:
+			print += fmt.Sprintf("Pushed commit to %s", event.Repo.Name)
+		case githubapi.CreateEventType:
+			print += fmt.Sprintf("Created new repository %s", event.Repo.Name)
+
+		default:
+			print += "unknown event type"
+		}
+
+		if idx < len(events)-1 {
+			print += "\n"
+		}
+	}
+
+	return print
 }
