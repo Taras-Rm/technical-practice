@@ -28,6 +28,7 @@ func (c *CLI) Run(args []string) error {
 	}
 
 	fmt.Println(publicEvents)
+	fmt.Println("finish")
 
 	return nil
 }
