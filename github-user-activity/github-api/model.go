@@ -5,6 +5,7 @@ type EventType string
 const (
 	PushEventType   EventType = "PushEvent"
 	CreateEventType EventType = "CreateEvent"
+	DeleteEventType EventType = "DeleteEvent"
 )
 
 type PublicEvent struct {

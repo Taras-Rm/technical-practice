@@ -51,7 +51,8 @@ func (c *CLI) formatEventsForPrint(events []githubapi.PublicEvent) string {
 			print += fmt.Sprintf("Pushed commit to %s", event.Repo.Name)
 		case githubapi.CreateEventType:
 			print += fmt.Sprintf("Created new repository %s", event.Repo.Name)
-
+		case githubapi.DeleteEventType:
+			print += fmt.Sprintf("Deleted repository %s", event.Repo.Name)
 		default:
 			print += "unknown event type"
 		}
