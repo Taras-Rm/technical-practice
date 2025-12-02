@@ -9,10 +9,12 @@ import (
 	"github.com/Taras-Rm/technical-practice/expense-tracker/internal/services"
 )
 
+const StorageFileName = "./data.json"
+
 func main() {
 	ctx := context.Background()
 
-	expensesRepository := json.NewExpensesRepository()
+	expensesRepository := json.NewExpensesRepository(StorageFileName)
 
 	expensesService := services.NewExpensesService(expensesRepository)
 

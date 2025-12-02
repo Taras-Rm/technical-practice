@@ -29,11 +29,11 @@ func (cli *CLI) Run(ctx context.Context, args []string) error {
 
 	switch command {
 	case domain.COMMAND_ADD:
-		response, err = cli.handleAdd(ctx, args[1:])
+		response, err = cli.handleAdd(ctx, args[2:])
 	case domain.COMMAND_LIST:
-		response, err = cli.handleList(ctx, args[1:])
+		response, err = cli.handleList(ctx)
 	case domain.COMMAND_SUMMARY:
-		response, err = cli.handleSummary(ctx, args[1:])
+		response, err = cli.handleSummary(ctx)
 	default:
 		response = "not supported command"
 	}
@@ -81,11 +81,7 @@ func (cli *CLI) handleAdd(ctx context.Context, args []string) (string, error) {
 	return fmt.Sprintf("Expense added successfully (ID: %d)", expense.Id), nil
 }
 
-func (cli *CLI) handleList(ctx context.Context, args []string) (string, error) {
-	if len(args) != 1 {
-		return "", fmt.Errorf("wrong list parameters")
-	}
-
+func (cli *CLI) handleList(ctx context.Context) (string, error) {
 	expenses, err := cli.expensesService.GetAllExpenses(ctx)
 	if err != nil {
 		return "", err
@@ -100,11 +96,7 @@ func (cli *CLI) handleList(ctx context.Context, args []string) (string, error) {
 	return res, nil
 }
 
-func (cli *CLI) handleSummary(ctx context.Context, args []string) (string, error) {
-	if len(args) != 1 {
-		return "", fmt.Errorf("wrong list parameters")
-	}
-
+func (cli *CLI) handleSummary(ctx context.Context) (string, error) {
 	expenses, err := cli.expensesService.GetAllExpenses(ctx)
 	if err != nil {
 		return "", err
