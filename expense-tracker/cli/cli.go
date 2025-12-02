@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/Taras-Rm/technical-practice/expense-tracker/internal/domain"
 	"github.com/Taras-Rm/technical-practice/expense-tracker/internal/services"
@@ -33,7 +34,7 @@ func (cli *CLI) Run(ctx context.Context, args []string) error {
 	case domain.COMMAND_LIST:
 		response, err = cli.handleList(ctx)
 	case domain.COMMAND_SUMMARY:
-		response, err = cli.handleSummary(ctx)
+		response, err = cli.handleSummary(ctx, args[2:])
 	case domain.COMMAND_DELETE:
 		response, err = cli.handleDelete(ctx, args[2:])
 	case domain.COMMAND_UPDATE:
@@ -86,7 +87,7 @@ func (cli *CLI) handleAdd(ctx context.Context, args []string) (string, error) {
 }
 
 func (cli *CLI) handleList(ctx context.Context) (string, error) {
-	expenses, err := cli.expensesService.GetAllExpenses(ctx)
+	expenses, err := cli.expensesService.GetAllExpenses(ctx, domain.GetAllExpensesFilter{})
 	if err != nil {
 		return "", err
 	}
@@ -100,8 +101,30 @@ func (cli *CLI) handleList(ctx context.Context) (string, error) {
 	return res, nil
 }
 
-func (cli *CLI) handleSummary(ctx context.Context) (string, error) {
-	expenses, err := cli.expensesService.GetAllExpenses(ctx)
+func (cli *CLI) handleSummary(ctx context.Context, args []string) (string, error) {
+	if len(args) != 0 && len(args) != 2 {
+		return "", fmt.Errorf("wrong summary parameters")
+	}
+
+	var err error
+	var monthFilter int
+
+	if len(args) == 2 {
+		if args[0] != "--month" {
+			return "", fmt.Errorf("no month param")
+		}
+
+		monthFilter, err = strconv.Atoi(args[1])
+		if err != nil {
+			return "", err
+		}
+	}
+
+	filter := domain.GetAllExpensesFilter{
+		Month: time.Month(monthFilter),
+	}
+
+	expenses, err := cli.expensesService.GetAllExpenses(ctx, filter)
 	if err != nil {
 		return "", err
 	}

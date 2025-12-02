@@ -98,11 +98,29 @@ func (s *expensesService) UpdateExpense(ctx context.Context, id int64, descripti
 	return &updatedExpense, nil
 }
 
-func (s *expensesService) GetAllExpenses(ctx context.Context) ([]domain.Expense, error) {
+func (s *expensesService) GetAllExpenses(ctx context.Context, filter domain.GetAllExpensesFilter) ([]domain.Expense, error) {
 	expenses, err := s.expensesRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return expenses, nil
+	return s.filterExpenses(expenses, filter), nil
+}
+
+func (s *expensesService) filterExpenses(expenses []domain.Expense, filter domain.GetAllExpensesFilter) []domain.Expense {
+	if filter.Month == 0 {
+		return expenses
+	}
+
+	var filteredExpenses []domain.Expense
+
+	if filter.Month > 0 {
+		for _, expense := range expenses {
+			if expense.Date.Month() == time.Month(filter.Month) {
+				filteredExpenses = append(filteredExpenses, expense)
+			}
+		}
+	}
+
+	return filteredExpenses
 }
