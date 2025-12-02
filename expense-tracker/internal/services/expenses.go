@@ -116,7 +116,7 @@ func (s *expensesService) filterExpenses(expenses []domain.Expense, filter domai
 
 	if filter.Month > 0 {
 		for _, expense := range expenses {
-			if expense.Date.Month() == time.Month(filter.Month) {
+			if expense.Date.Month() == time.Month(filter.Month) && expense.Date.Year() == time.Now().Year() {
 				filteredExpenses = append(filteredExpenses, expense)
 			}
 		}
