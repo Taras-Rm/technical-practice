@@ -11,7 +11,7 @@ type expensesService struct {
 	expensesRepo domain.ExpensesRepository
 }
 
-func NewExpensesService(expensesRepo domain.ExpensesRepository) *expensesService {
+func NewExpensesService(expensesRepo domain.ExpensesRepository) ExpensesService {
 	return &expensesService{
 		expensesRepo,
 	}
