@@ -34,6 +34,10 @@ func (cli *CLI) Run(ctx context.Context, args []string) error {
 		response, err = cli.handleList(ctx)
 	case domain.COMMAND_SUMMARY:
 		response, err = cli.handleSummary(ctx)
+	case domain.COMMAND_DELETE:
+		response, err = cli.handleDelete(ctx, args[2:])
+	case domain.COMMAND_UPDATE:
+		response, err = cli.handleUpdate(ctx, args[2:])
 	default:
 		response = "not supported command"
 	}
@@ -109,4 +113,61 @@ func (cli *CLI) handleSummary(ctx context.Context) (string, error) {
 	}
 
 	return fmt.Sprintf("Total expenses: $%d", totalExpenses), nil
+}
+
+func (cli *CLI) handleDelete(ctx context.Context, args []string) (string, error) {
+	if len(args) != 2 {
+		return "", fmt.Errorf("wrong delete parameters")
+	}
+
+	if args[0] != "--id" {
+		return "", fmt.Errorf("no id param")
+	}
+
+	id, err := strconv.Atoi(args[1])
+	if err != nil {
+		return "", err
+	}
+
+	err = cli.expensesService.DeleteExpense(ctx, int64(id))
+	if err != nil {
+		return "", err
+	}
+
+	return "Expense deleted successfully", nil
+}
+
+func (cli *CLI) handleUpdate(ctx context.Context, args []string) (string, error) {
+	if len(args) != 6 {
+		return "", fmt.Errorf("wrong update parameters")
+	}
+
+	if args[0] != "--id" {
+		return "", fmt.Errorf("no description param")
+	}
+
+	if args[2] != "--description" {
+		return "", fmt.Errorf("no description param")
+	}
+
+	if args[4] != "--amount" {
+		return "", fmt.Errorf("no amount param")
+	}
+
+	id, err := strconv.Atoi(args[1])
+	if err != nil {
+		return "", err
+	}
+
+	amount, err := strconv.Atoi(args[5])
+	if err != nil {
+		return "", err
+	}
+
+	expense, err := cli.expensesService.UpdateExpense(ctx, int64(id), args[3], int64(amount))
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("Expense updated successfully (ID: %d)", expense.Id), nil
 }

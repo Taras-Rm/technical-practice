@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/Taras-Rm/technical-practice/expense-tracker/internal/domain"
@@ -52,6 +53,10 @@ func (s *expensesService) DeleteExpense(ctx context.Context, id int64) error {
 		if expense.Id != id {
 			filteredExpenses = append(filteredExpenses, expense)
 		}
+	}
+
+	if len(expenses) == len(filteredExpenses) {
+		return fmt.Errorf("expense with id: %d not found", id)
 	}
 
 	err = s.expensesRepo.SaveAll(ctx, filteredExpenses)
