@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"github.com/Taras-Rm/technical-practice/expense-tracker/cli"
@@ -9,13 +10,15 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+
 	expensesRepository := json.NewExpensesRepository()
 
 	expensesService := services.NewExpensesService(expensesRepository)
 
 	cli := cli.NewCLI(expensesService)
 
-	err := cli.Run(os.Args)
+	err := cli.Run(ctx, os.Args)
 	if err != nil {
 		panic(err)
 	}
