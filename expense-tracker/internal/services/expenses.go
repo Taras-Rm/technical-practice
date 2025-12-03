@@ -18,7 +18,7 @@ func NewExpensesService(expensesRepo domain.ExpensesRepository) ExpensesService 
 	}
 }
 
-func (s *expensesService) AddExpense(ctx context.Context, description string, amount int64) (*domain.Expense, error) {
+func (s *expensesService) AddExpense(ctx context.Context, description string, amount int64, category string) (*domain.Expense, error) {
 	expenses, err := s.expensesRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err
@@ -28,6 +28,7 @@ func (s *expensesService) AddExpense(ctx context.Context, description string, am
 		Id:          2,
 		Description: description,
 		Amount:      amount,
+		Category:    category,
 		Date:        time.Now(),
 	}
 
@@ -67,7 +68,7 @@ func (s *expensesService) DeleteExpense(ctx context.Context, id int64) error {
 	return nil
 }
 
-func (s *expensesService) UpdateExpense(ctx context.Context, id int64, description string, amount int64) (*domain.Expense, error) {
+func (s *expensesService) UpdateExpense(ctx context.Context, id int64, description string, amount int64, category string) (*domain.Expense, error) {
 	expenses, err := s.expensesRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err
@@ -84,6 +85,7 @@ func (s *expensesService) UpdateExpense(ctx context.Context, id int64, descripti
 				Description: description,
 				Amount:      amount,
 				Date:        expense.Date,
+				Category:    category,
 			}
 
 			filteredExpenses = append(filteredExpenses, updatedExpense)

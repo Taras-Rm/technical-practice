@@ -61,7 +61,7 @@ func (cli *CLI) getCommand(args []string) (domain.CLICommand, error) {
 }
 
 func (cli *CLI) handleAdd(ctx context.Context, args []string) (string, error) {
-	if len(args) != 4 {
+	if len(args) != 6 {
 		return "", fmt.Errorf("wrong add parameters")
 	}
 
@@ -73,12 +73,16 @@ func (cli *CLI) handleAdd(ctx context.Context, args []string) (string, error) {
 		return "", fmt.Errorf("no amount param")
 	}
 
+	if args[4] != "--category" {
+		return "", fmt.Errorf("no category param")
+	}
+
 	amount, err := strconv.Atoi(args[3])
 	if err != nil {
 		return "", err
 	}
 
-	expense, err := cli.expensesService.AddExpense(ctx, args[1], int64(amount))
+	expense, err := cli.expensesService.AddExpense(ctx, args[1], int64(amount), args[5])
 	if err != nil {
 		return "", err
 	}
@@ -161,7 +165,7 @@ func (cli *CLI) handleDelete(ctx context.Context, args []string) (string, error)
 }
 
 func (cli *CLI) handleUpdate(ctx context.Context, args []string) (string, error) {
-	if len(args) != 6 {
+	if len(args) != 8 {
 		return "", fmt.Errorf("wrong update parameters")
 	}
 
@@ -177,6 +181,10 @@ func (cli *CLI) handleUpdate(ctx context.Context, args []string) (string, error)
 		return "", fmt.Errorf("no amount param")
 	}
 
+	if args[6] != "--category" {
+		return "", fmt.Errorf("no category param")
+	}
+
 	id, err := strconv.Atoi(args[1])
 	if err != nil {
 		return "", err
@@ -187,7 +195,7 @@ func (cli *CLI) handleUpdate(ctx context.Context, args []string) (string, error)
 		return "", err
 	}
 
-	expense, err := cli.expensesService.UpdateExpense(ctx, int64(id), args[3], int64(amount))
+	expense, err := cli.expensesService.UpdateExpense(ctx, int64(id), args[3], int64(amount), args[7])
 	if err != nil {
 		return "", err
 	}

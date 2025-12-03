@@ -7,6 +7,7 @@ type Expense struct {
 	Description string    `json:"description"`
 	Amount      int64     `json:"amount"`
 	Date        time.Time `json:"date"`
+	Category    string    `json:"category"`
 }
 
 type GetAllExpensesFilter struct {

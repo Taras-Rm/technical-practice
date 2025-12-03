@@ -4,7 +4,15 @@
       "id": 2,
       "description": "Lunch sd 32",
       "amount": 3233232,
-      "date": "2025-12-01T22:45:53.724578-05:00"
+      "date": "2025-12-01T22:45:53.724578-05:00",
+      "category": "food"
+    },
+    {
+      "id": 2,
+      "description": "Lunch sd 32",
+      "amount": 3233232,
+      "date": "2025-12-02T19:04:44.473135-05:00",
+      "category": "Food"
     }
   ]
 }

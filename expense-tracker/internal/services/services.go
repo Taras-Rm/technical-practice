@@ -7,8 +7,8 @@ import (
 )
 
 type ExpensesService interface {
-	AddExpense(ctx context.Context, description string, amount int64) (*domain.Expense, error)
+	AddExpense(ctx context.Context, description string, amount int64, category string) (*domain.Expense, error)
 	DeleteExpense(ctx context.Context, id int64) error
-	UpdateExpense(ctx context.Context, id int64, description string, amount int64) (*domain.Expense, error)
+	UpdateExpense(ctx context.Context, id int64, description string, amount int64, category string) (*domain.Expense, error)
 	GetAllExpenses(ctx context.Context, filter domain.GetAllExpensesFilter) ([]domain.Expense, error)
 }
