@@ -1,17 +1,17 @@
 {
   "expenses": [
     {
-      "id": 2,
+      "id": "37bc8bae-e753-4158-a12d-0b52cfaf8268",
       "description": "Lunch sd 32",
       "amount": 3233232,
-      "date": "2025-12-01T22:45:53.724578-05:00",
-      "category": "food"
+      "date": "2025-12-02T19:13:31.384876-05:00",
+      "category": "Food"
     },
     {
-      "id": 2,
+      "id": "a0302ff0-9ec2-421e-bba3-2cde5f9010d3",
       "description": "Lunch sd 32",
-      "amount": 3233232,
-      "date": "2025-12-02T19:04:44.473135-05:00",
+      "amount": 2,
+      "date": "2025-12-02T19:13:36.073706-05:00",
       "category": "Food"
     }
   ]

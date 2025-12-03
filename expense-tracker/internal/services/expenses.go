@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Taras-Rm/technical-practice/expense-tracker/internal/domain"
+	"github.com/google/uuid"
 )
 
 type expensesService struct {
@@ -25,7 +26,7 @@ func (s *expensesService) AddExpense(ctx context.Context, description string, am
 	}
 
 	newExpense := domain.Expense{
-		Id:          2,
+		Id:          uuid.New().String(),
 		Description: description,
 		Amount:      amount,
 		Category:    category,
@@ -42,7 +43,7 @@ func (s *expensesService) AddExpense(ctx context.Context, description string, am
 	return &newExpense, nil
 }
 
-func (s *expensesService) DeleteExpense(ctx context.Context, id int64) error {
+func (s *expensesService) DeleteExpense(ctx context.Context, id string) error {
 	expenses, err := s.expensesRepo.GetAll(ctx)
 	if err != nil {
 		return err
@@ -57,7 +58,7 @@ func (s *expensesService) DeleteExpense(ctx context.Context, id int64) error {
 	}
 
 	if len(expenses) == len(filteredExpenses) {
-		return fmt.Errorf("expense with id: %d not found", id)
+		return fmt.Errorf("expense with id: %s not found", id)
 	}
 
 	err = s.expensesRepo.SaveAll(ctx, filteredExpenses)
@@ -68,7 +69,7 @@ func (s *expensesService) DeleteExpense(ctx context.Context, id int64) error {
 	return nil
 }
 
-func (s *expensesService) UpdateExpense(ctx context.Context, id int64, description string, amount int64, category string) (*domain.Expense, error) {
+func (s *expensesService) UpdateExpense(ctx context.Context, id string, description string, amount int64, category string) (*domain.Expense, error) {
 	expenses, err := s.expensesRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err

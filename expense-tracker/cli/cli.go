@@ -87,7 +87,7 @@ func (cli *CLI) handleAdd(ctx context.Context, args []string) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("Expense added successfully (ID: %d)", expense.Id), nil
+	return fmt.Sprintf("Expense added successfully (ID: %s)", expense.Id), nil
 }
 
 func (cli *CLI) handleList(ctx context.Context) (string, error) {
@@ -99,7 +99,7 @@ func (cli *CLI) handleList(ctx context.Context) (string, error) {
 	var res string
 
 	for _, e := range expenses {
-		res += fmt.Sprintf("%d   %s  %s        %d\n", e.Id, e.Date.String(), e.Description, e.Amount)
+		res += fmt.Sprintf("%s   %s  %s        %d\n", e.Id, e.Date.String(), e.Description, e.Amount)
 	}
 
 	return res, nil
@@ -151,12 +151,7 @@ func (cli *CLI) handleDelete(ctx context.Context, args []string) (string, error)
 		return "", fmt.Errorf("no id param")
 	}
 
-	id, err := strconv.Atoi(args[1])
-	if err != nil {
-		return "", err
-	}
-
-	err = cli.expensesService.DeleteExpense(ctx, int64(id))
+	err := cli.expensesService.DeleteExpense(ctx, args[1])
 	if err != nil {
 		return "", err
 	}
@@ -185,20 +180,15 @@ func (cli *CLI) handleUpdate(ctx context.Context, args []string) (string, error)
 		return "", fmt.Errorf("no category param")
 	}
 
-	id, err := strconv.Atoi(args[1])
-	if err != nil {
-		return "", err
-	}
-
 	amount, err := strconv.Atoi(args[5])
 	if err != nil {
 		return "", err
 	}
 
-	expense, err := cli.expensesService.UpdateExpense(ctx, int64(id), args[3], int64(amount), args[7])
+	expense, err := cli.expensesService.UpdateExpense(ctx, args[1], args[3], int64(amount), args[7])
 	if err != nil {
 		return "", err
 	}
 
-	return fmt.Sprintf("Expense updated successfully (ID: %d)", expense.Id), nil
+	return fmt.Sprintf("Expense updated successfully (ID: %s)", expense.Id), nil
 }
